@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3. Plotting &mdash; dvmdostem v0.6.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4. Contributing to the Codebase" href="make_contribution.html" />
+    <link rel="prev" title="2. Basic Model Setup and Run" href="basic_model_run.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> dvmdostem
+          </a>
+              <div class="version">
+                v0.6.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../model_overview.html">1. Model Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../running_dvmdostem.html">2. Running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../software_development_info.html">3. Dev Info</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../SA_UQ.html">4. SA and UQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_cheat_sheet.html">5. Command Cheat Sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common_acronyms.html">6. Common Project Acronyms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration.html">7. Manual Calibration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples and Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../prelude.html">1. Prelude</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic_model_run.html">2. Basic Model Setup and Run</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#existing-tools-code-and-patterns">3.1. Existing Tools, Code and Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#approches-using-webserver">3.2. Approches using webserver</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bokeh">3.2.1. Bokeh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-options">3.2.2. Other options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#third-party-tools">3.3. Third party tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#plotting-outputs">3.4. Plotting outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="make_contribution.html">4. Contributing to the Codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_github_features.html">5. Using Github’s Features</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">dvmdostem</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><span class="section-number">3. </span>Plotting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples_and_tutorials/plotting_discussion.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="plotting">
+<span id="plottinglab"></span><h1><span class="section-number">3. </span>Plotting<a class="headerlink" href="#plotting" title="Permalink to this heading"></a></h1>
+<p>Plotting is a natural and essential step in the modelling process. There use
+-cases and limitations are numerous and there is not a single silver bullet
+plotting solution that is sure to work for you.</p>
+<p>When working on or with plotting code, it is helpful to remember that problems
+can arise in two overlapping spheres: <em>capability</em> and <em>environment</em>.</p>
+<p><em>Capability</em> refers to whether or not the analysis and visualisation you seek are
+implemented in the code you are working with.</p>
+<p><em>Environment</em> referes to whether the computing environment(s) you work with have
+the appropriate hardware, software, tools, etc to carry out the capabilities of
+the code you are working with.</p>
+<p>These concerns are sometimes totally distinct and sometimes arise in conflict
+with each other. Ideally code is written to work with a wide variety of
+environments as this makes it easier for other people to use the code in their
+circumstances.</p>
+<section id="existing-tools-code-and-patterns">
+<h2><span class="section-number">3.1. </span>Existing Tools, Code and Patterns<a class="headerlink" href="#existing-tools-code-and-patterns" title="Permalink to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>existing code in the scripts directory</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>assumption is generally that you can display interactive windows (Xquartz,
+X11, Xwindows, native windowing environment, etc)</p></li>
+<li><p>directory is getting messy - need to re-factor in to some better patterns
+(i.e. move tests, move stuff into sub-directories) - means figuring
+out/understanding implicaitons with respect to packaging and <code class="docutils literal notranslate"><span class="pre">import</span></code></p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>sometimes options exist to save to static files</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>usually it is easy to adjust the code slightly to achieve this (i.e.
+<code class="docutils literal notranslate"><span class="pre">plt.show(...)</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">plt.savefig(..)</span></code>) - problems with version control
+when you have constant small customizaitons, i.e. file naming, or paths</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>table of existing tools columns: name, CLI implemented?, tests?, save?, show?</p></li>
+<li><p>Notebooks</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>problems with version control</p></li>
+<li><p>problems with out of order execution</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="approches-using-webserver">
+<h2><span class="section-number">3.2. </span>Approches using webserver<a class="headerlink" href="#approches-using-webserver" title="Permalink to this heading"></a></h2>
+<p>This approach gets around the issue of needing a windowing system by using a
+web-browser for display, and a web-server for generating the visualization. In
+addition to de-coupling the generation and display conerns, this approach allows
+for networking and enables plotting using and Docker container run-time or any
+other network-accessible run-time!</p>
+<section id="bokeh">
+<h3><span class="section-number">3.2.1. </span>Bokeh<a class="headerlink" href="#bokeh" title="Permalink to this heading"></a></h3>
+<p>This is the current preferred approach - or rather the only approach that has
+been tried in any significant capacity.</p>
+</section>
+<section id="other-options">
+<h3><span class="section-number">3.2.2. </span>Other options<a class="headerlink" href="#other-options" title="Permalink to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>RStudio, plotly, notebook server</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="third-party-tools">
+<h2><span class="section-number">3.3. </span>Third party tools<a class="headerlink" href="#third-party-tools" title="Permalink to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ncview</span></code> <a class="reference external" href="https://cirrus.ucsd.edu/ncview/">https://cirrus.ucsd.edu/ncview/</a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">panlopy</span></code> <a class="reference external" href="https://www.giss.nasa.gov/tools/panoply/">https://www.giss.nasa.gov/tools/panoply/</a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="plotting-outputs">
+<h2><span class="section-number">3.4. </span>Plotting outputs<a class="headerlink" href="#plotting-outputs" title="Permalink to this heading"></a></h2>
+<p>There are several plotting tools buried in the <code class="docutils literal notranslate"><span class="pre">scripts/</span></code> directory but none
+of them are particularly polished or fine tuned. Many, but not all, of the
+scripts have decent info with the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag. There is not a consistent
+pattern for whether plots are saved or shown in an interactive window, and in
+the cases where the plots are saved, the file names are not standardized. In
+other words, as a user, you will likely need to look at the script code to
+determine whether your plot will be displayed or saved. For example, looking at
+script <code class="docutils literal notranslate"><span class="pre">plot_output_var.py</span></code> with a text editor, approximately lines 250-252,
+we can see that in fact both <code class="docutils literal notranslate"><span class="pre">plt.savefig()</span></code> and <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> are being
+called.</p>
+<a class="reference internal image-reference" href="../_images/plot_output_var.png"><img alt="plot_output_var script" src="../_images/plot_output_var.png" style="width: 600px;" /></a>
+<p>This actually works nicely because when the command is run on the Docker
+container, the <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> call is essentially ignored and the resulting plot
+is saved to a file. The name of the saved plot is not currently configurable, so
+it would be up to the user to rename the file and move it somewhere appropriate.</p>
+<p>Also note that there is a script, <code class="docutils literal notranslate"><span class="pre">output_utils.py</span></code>, that is designed to be
+imported into other Python scripts and has a bunch of functions for summarizing
+variables over various dimensions (layers, pfts, etc).</p>
+<p>The existing plotting tools rely on a variety of specific Python libraries, and
+not everything has been tested with the versions specified in the
+<code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file, so you might encounter small issues with the scripts
+that have to be resolved before they will run. Frequently this is just a matter
+of updating deprecated function calls for libraries like <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> or
+<code class="docutils literal notranslate"><span class="pre">pandas</span></code> that have been changed since we first wrote the plotting tools.
+Please submit a Github pull request if you encounter and fix any of these
+issues!</p>
+<p>While all of the existing plotting tools are written in Python, users are free
+(and encouraged!) to write their own plotting tools using whatever language they
+prefer. We have made a lot of effort to make our outputs conform to the <a href="#id1"><span class="problematic" id="id2">`CF
+Conventions`_</span></a>, especially with respect to the time dimensions, data units, and
+geo-referencing. The output files are generally viewable at a basic level using
+standard tools like <a href="#id3"><span class="problematic" id="id4">`ncview`_</span></a> as well.</p>
+<div class="admonition note" id="docker-interactive-plotting">
+<p class="admonition-title">Note</p>
+<p>Working with Docker provides advantages for standardizing the Python
+environment and folder structure amongst developers, but provides one
+significant hurdle for plotting: it is difficult to display the standard
+Matplotlib interactive plotting window due to the need for the XWindows system
+to be installed on your host computer and the <code class="docutils literal notranslate"><span class="pre">DISPLAY</span></code> environment variable to
+be set correctly. Typically when plotting with <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> natively on your
+computer, when you run <code class="docutils literal notranslate"><span class="pre">plt.show(...)</span></code> you are presented with a window showing
+the plot and including some panning and zooming controls. From inside a Docker
+container this will not work - nothing will show up and you may get error
+messages.</p>
+<p>There several possible solutions/workarounds we have discovered:</p>
+<ol class="arabic simple">
+<li><p>Avoid using <code class="docutils literal notranslate"><span class="pre">plt.show(...)</span></code> and instead modify plotting scripts to use
+<code class="docutils literal notranslate"><span class="pre">plt.savefig(...)</span></code>.</p></li>
+<li><p>Install XWindows on the host system, Python TKinter inside Docker container
+and set the <code class="docutils literal notranslate"><span class="pre">DISPLAY</span></code> environment variable appropriately when executing
+commands in Docker container. See more info here:
+<a class="reference external" href="https://stackoverflow.com/questions/46018102/how-can-i-use-matplotlib-pyplot-in-a-docker-container">https://stackoverflow.com/questions/46018102/how-can-i-use-matplotlib-pyplot-in-a-docker-container</a>.</p></li>
+<li><p>Run a Jupyter Notebook Server inside the Docker container and do plotting
+inline in Jupyter Notebook.</p></li>
+<li><p>Perform plotting and analysis on your host system.</p></li>
+</ol>
+</div>
+<p>Before we get to plotting we should first review the outputs that we have
+specified for this model run and look at the files that were created. During the
+setup, we requested three variables, GPP, RH and VEGC. We requested GPP and RH
+at yearly resolution, and VEGC at monthly and PFT resolution. We also indicated
+that we did not want output for the equilibrium stage, but we did want output
+for all other run stages. We can easily verify these settings by looking at the
+<code class="docutils literal notranslate"><span class="pre">config.js</span></code> file for the run and using the <code class="docutils literal notranslate"><span class="pre">--summary</span></code> option for
+<code class="docutils literal notranslate"><span class="pre">outspec_utils.py</span></code>, which you are encouraged to do on your own.</p>
+<p>We can start by looking at the output files that were created by our run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> dvmdostem-dev ls /data/workflows/ws2022_lab1/output
+GPP_yearly_sc.nc  RH_yearly_sp.nc     VEGC_monthly_tr.nc  restart-sp.nc
+GPP_yearly_sp.nc  RH_yearly_tr.nc     restart-eq.nc     restart-tr.nc
+GPP_yearly_tr.nc  VEGC_monthly_sc.nc  restart-pr.nc     run_status.nc
+RH_yearly_sc.nc   VEGC_monthly_sp.nc  restart-sc.nc
+</pre></div>
+</div>
+<p>You can ignore the <code class="docutils literal notranslate"><span class="pre">restart-*.nc</span></code> files - these files help the model transition
+from one stage to the next. And we can see that we have three files for each
+variable - one file for each run-stage. If we inspect the GPP file we can see
+that there is a single data variable (GPP), the dimensions are (time, y, x), and
+the length of the time dimension is 25 which corresponds to the number of spinup
+years we ran for.</p>
+<p>One of the easiest things we might want to look at is a time series plot of GPP
+for one of the pixels we ran. This can easily be done with ncview, but you will
+almost certainly encounter the problems described in the note about Docker and
+interactive plotting <a class="reference internal" href="#docker-interactive-plotting">docker interactive plotting</a>. If you run <code class="docutils literal notranslate"><span class="pre">ncview</span></code> on
+your host machine (from which the output files should be accessible thanks to
+the Docker volume), you will see something like this:</p>
+<a class="reference internal image-reference" href="../_images/ncview.png"><img alt="example ncview" src="../_images/ncview.png" style="width: 600px;" /></a>
+<p>Note that while the ncview interface appears a bit antiquated, it is an
+extremely functional program that allows exploration of NetCDF files.</p>
+<p>We can create a very similar plot to the <code class="docutils literal notranslate"><span class="pre">ncview</span></code> plot using our
+<code class="docutils literal notranslate"><span class="pre">plot_output_var.py</span></code> script, for example. Notice that we have used the one-off
+style of command here, and that we are viewing the saved file after the script
+has exited.</p>
+<a class="reference internal image-reference" href="../_images/plot_output_var_example.png"><img alt="example output plot" src="../_images/plot_output_var_example.png" style="width: 600px;" /></a>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basic_model_run.html" class="btn btn-neutral float-left" title="2. Basic Model Setup and Run" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="make_contribution.html" class="btn btn-neutral float-right" title="4. Contributing to the Codebase" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Tobey Carman, Ruth Rutter, Helene Genet, Eugenie Euskirchen.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
