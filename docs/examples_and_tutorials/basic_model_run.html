@@ -67,7 +67,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#start-and-run-docker-containers">2.4. Start and run Docker containers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setting-up-a-dvmdostem-run">2.5. Setting up a dvmdostem run</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#setting-up-the-working-directory">2.5.1. Setting up the working directory</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#adjusting-config-file">2.5.2. Adjusting <code class="docutils literal notranslate"><span class="pre">config</span></code> file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adjusting-the-config-file">2.5.2. Adjusting the <code class="docutils literal notranslate"><span class="pre">config</span></code> file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adjusting-the-run-mask">2.5.3. Adjusting the run mask</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#choosing-the-outputs">2.5.4. Choosing the outputs</a></li>
 </ul>
@@ -509,7 +509,7 @@ run.</p>
 <ol class="arabic simple">
 <li><p>Decide where on your computer you want to store your model run(s).</p></li>
 <li><p>Decide what spatial (geographic) area you want to run.</p></li>
-<li><p>Decide what variables you want to have output</p></li>
+<li><p>Decide what variables you want to have output.</p></li>
 <li><p>Decide on all other run settings/parameters:</p>
 <ul class="simple">
 <li><p>Which stages to run and for how many years.</p></li>
@@ -561,23 +561,23 @@ to leverage the shell’s tab-complete functionality in different circumstances.
 <section id="setting-up-the-working-directory">
 <h3><span class="section-number">2.5.1. </span>Setting up the working directory<a class="headerlink" href="#setting-up-the-working-directory" title="Permalink to this heading"></a></h3>
 <p>First we are going to set up a working directory where we will conduct our model
-run and save the outputs. We will keep this directory inside the workflows
+run and save the outputs. We will keep this directory inside the <code class="docutils literal notranslate"><span class="pre">workflows</span></code>
 folder (which you linked from your host to the container during the setup
 above). There is a helper script for setting up a working directory. This script
 will copy over the required parameter and settings files, set up an output
 folder and make some adjustments to the configuration file for the run.</p>
 <p>Using the one-off command style, run the script. For this case we just
-arbitrarily select something from the input catalog. I’d have to look at a map
-to know where Chevak is.</p>
+arbitrarily select a dataset from your input catalog. Don’t worry if you have a
+different dataset from the example shown here.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> dvmdostem-dev scripts/setup_working_directory.py <span class="se">\</span>
-/data/workflows/ws2022_lab1 <span class="se">\</span>
+/data/workflows/basic_model_run <span class="se">\</span>
 --input-data-path /data/input-catalog/cru-ts40_ar5_rcp85_ncar-ccsm4_CALM_Chevak_10x10
 Namespace<span class="o">(</span><span class="nv">copy_inputs</span><span class="o">=</span>False,
 <span class="nv">input_data_path</span><span class="o">=</span><span class="s1">&#39;/data/input-catalog/cru-ts40_ar5_rcp85_ncar-ccsm4_CALM_Chevak_10x10&#39;</span>,
-<span class="nv">new_directory</span><span class="o">=</span><span class="s1">&#39;/data/workflows/ws2022_lab1&#39;</span>, <span class="nv">no_cal_targets</span><span class="o">=</span>False<span class="o">)</span>
+<span class="nv">new_directory</span><span class="o">=</span><span class="s1">&#39;/data/workflows/basic_model_run&#39;</span>, <span class="nv">no_cal_targets</span><span class="o">=</span>False<span class="o">)</span>
 </pre></div>
 </div>
-<p>which will create a new folder (named <code class="docutils literal notranslate"><span class="pre">ws2022_lab1</span></code>) inside your workflows
+<p>which will create a new folder (named <code class="docutils literal notranslate"><span class="pre">basic_model_run</span></code>) inside your workflows
 directory. This folder will have the <code class="docutils literal notranslate"><span class="pre">dvmdostem</span></code> default parameters copied in
 as well as config settings. The paths in the <code class="docutils literal notranslate"><span class="pre">config.js</span></code> file should be
 correctly set to the input data set you chose with the <code class="docutils literal notranslate"><span class="pre">--input-data-path</span></code>
@@ -590,7 +590,7 @@ we just haven’t had time to refine the information that is printed out to the
 console. So when you see stuff like</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>...
 Namespace<span class="o">(</span><span class="nv">copy_inputs</span><span class="o">=</span>False, <span class="nv">input_data_path</span><span class="o">=</span><span class="s1">&#39;/data/input-catalog/cru-ts40_ar5_rcp85_ncar-ccsm4_CALM_Chevak_10x10&#39;</span>,
-<span class="nv">new_directory</span><span class="o">=</span><span class="s1">&#39;/data/workflows/ws2022_lab1&#39;</span>, <span class="nv">no_cal_targets</span><span class="o">=</span>False<span class="o">)</span>
+<span class="nv">new_directory</span><span class="o">=</span><span class="s1">&#39;/data/workflows/basic_model_run&#39;</span>, <span class="nv">no_cal_targets</span><span class="o">=</span>False<span class="o">)</span>
 </pre></div>
 </div>
 <p>Sometimes it is useful and sometimes it isn’t. In most cases it is simply
@@ -600,9 +600,9 @@ leftover from whatever was needed when the script was developed.</p>
 <p class="admonition-title">Note</p>
 <p>What happens when you get something like this:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> dvmdostem-dev scripts/setup_working_directory.py <span class="se">\</span>
-/data/workflows/ws2022_lab1 --input-data-path <span class="se">\</span>
+/data/workflows/basic_model_run --input-data-path <span class="se">\</span>
 /data/input-catalog/cru-ts40_ar5_rcp85_ncar-ccsm4_CALM_Chevak_10x10
-Namespace<span class="o">(</span><span class="nv">copy_inputs</span><span class="o">=</span>False, <span class="nv">input_data_path</span><span class="o">=</span><span class="s1">&#39;/data/input-catalog/cru-ts40_ar5_rcp85_ncar-ccsm4_CALM_Chevak_10x10&#39;</span>, <span class="nv">new_directory</span><span class="o">=</span><span class="s1">&#39;/data/workflows/ws2022_lab1&#39;</span>, <span class="nv">no_cal_targets</span><span class="o">=</span>False<span class="o">)</span>
+Namespace<span class="o">(</span><span class="nv">copy_inputs</span><span class="o">=</span>False, <span class="nv">input_data_path</span><span class="o">=</span><span class="s1">&#39;/data/input-catalog/cru-ts40_ar5_rcp85_ncar-ccsm4_CALM_Chevak_10x10&#39;</span>, <span class="nv">new_directory</span><span class="o">=</span><span class="s1">&#39;/data/workflows/basic_model_run&#39;</span>, <span class="nv">no_cal_targets</span><span class="o">=</span>False<span class="o">)</span>
 Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
   File <span class="s2">&quot;scripts/setup_working_directory.py&quot;</span>, line <span class="m">82</span>, <span class="k">in</span> &lt;module&gt;
     shutil.copytree<span class="o">(</span>os.path.join<span class="o">(</span>ddt_dir, <span class="s1">&#39;config&#39;</span><span class="o">)</span>, os.path.join<span class="o">(</span>args.new_directory, <span class="s1">&#39;config&#39;</span><span class="o">))</span>
@@ -612,7 +612,7 @@ Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
     os.makedirs<span class="o">(</span>dst, <span class="nv">exist_ok</span><span class="o">=</span>dirs_exist_ok<span class="o">)</span>
   File <span class="s2">&quot;/home/develop/.pyenv/versions/3.8.6/lib/python3.8/os.py&quot;</span>, line <span class="m">223</span>, <span class="k">in</span> makedirs
     mkdir<span class="o">(</span>name, mode<span class="o">)</span>
-FileExistsError: <span class="o">[</span>Errno <span class="m">17</span><span class="o">]</span> File exists: <span class="s1">&#39;/data/workflows/ws2022_lab1/config&#39;</span>
+FileExistsError: <span class="o">[</span>Errno <span class="m">17</span><span class="o">]</span> File exists: <span class="s1">&#39;/data/workflows/basic_model_run/config&#39;</span>
 </pre></div>
 </div>
 <p>In this case the error has to do with the directory you are trying to create
@@ -630,28 +630,29 @@ directory name.</p>
 </div>
 <p>Let’s look around in the directory you just created.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker compose <span class="nb">exec</span> dvmdostem-dev bash
-develop@ef7aad33441c:/work$ <span class="nb">cd</span> /data/workflows/ws2022_lab1/
+develop@ef7aad33441c:/work$ <span class="nb">cd</span> /data/workflows/basic_model_run/
 
 
 <span class="c1"># Check the files that should have been created with the setup script</span>
-develop@ef7aad33441c:/data/workflows/ws2022_lab1$ ls
+develop@ef7aad33441c:/data/workflows/basic_model_run$ ls
 calibration  config  output  parameters  run-mask.nc
 </pre></div>
 </div>
 <p>The idea is that each run will exist in its own self-contained directory with
-all the config files and the output data. This way the run can be easily
-adjusted, re-run, and archived for later use without losing any provenance data.
-The one linked item will be the actual driving input data files - they are not
-copied into the run directory, but are simply linked by specifying paths in the
-<code class="docutils literal notranslate"><span class="pre">config/config.js</span></code> file. If you need you could copy the inputs into the run
-directory and adjust the paths in the <code class="docutils literal notranslate"><span class="pre">config/config.js</span></code> file accordingly. All
-the parameters for the run are in the <code class="docutils literal notranslate"><span class="pre">parameters/</span></code> directory, there is
-<code class="docutils literal notranslate"><span class="pre">run-mask.nc</span></code> for controlling which pixels to run, a folder for calibration
-info, a folder for the outputs and a folder for the config file and output
-specification file.</p>
+all the config files necessary to execute the run. The output data will also be
+stored here. This ensures that the run can be easily adjusted, re-run, and
+archived for later use without losing any provenance data. By default the
+driving input data is not copied to the experiment folder (to save space). If
+you need to copy the driving input data into your experiment directory, try the
+<code class="docutils literal notranslate"><span class="pre">--copy-inputs</span></code> flag.</p>
+<p>If you inspect the <code class="docutils literal notranslate"><span class="pre">config/config.js</span></code> file, you will see that the paths to the
+input data are absolute (starting with <code class="docutils literal notranslate"><span class="pre">/</span></code> and pointing toward the input
+dataset that you specified) and the paths to the parameters, <code class="docutils literal notranslate"><span class="pre">run-mask.nc</span></code>,
+calibration folder, <code class="docutils literal notranslate"><span class="pre">outspec.csv</span></code> and output folder are relative (no leading
+<code class="docutils literal notranslate"><span class="pre">/</span></code>).</p>
 </section>
-<section id="adjusting-config-file">
-<h3><span class="section-number">2.5.2. </span>Adjusting <code class="docutils literal notranslate"><span class="pre">config</span></code> file<a class="headerlink" href="#adjusting-config-file" title="Permalink to this heading"></a></h3>
+<section id="adjusting-the-config-file">
+<h3><span class="section-number">2.5.2. </span>Adjusting the <code class="docutils literal notranslate"><span class="pre">config</span></code> file<a class="headerlink" href="#adjusting-the-config-file" title="Permalink to this heading"></a></h3>
 <div class="admonition note" id="input-shapes">
 <p class="admonition-title">Note</p>
 <p>Notice that for this run, we only care to run a single pixel (a “site run”) so
@@ -684,15 +685,15 @@ your host machine or using <code class="docutils literal notranslate"><span clas
 can use the <code class="docutils literal notranslate"><span class="pre">--show</span></code> option to see what the mask looks like before and after
 adjusting it. We’ll turn on 2 pixels here, just for fun:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># First make sure all pixels are OFF (set to 0)</span>
-$ docker compose <span class="nb">exec</span> dvmdostem-dev runmask-util.py --reset /data/workflows/ws2022_lab1/run-mask.nc
+$ docker compose <span class="nb">exec</span> dvmdostem-dev runmask-util.py --reset /data/workflows/basic_model_run/run-mask.nc
 Setting all pixels <span class="k">in</span> runmask to <span class="s1">&#39;0&#39;</span> <span class="o">(</span>OFF<span class="o">)</span>.
 
 <span class="c1"># Then turn one pixel.</span>
-$ docker compose <span class="nb">exec</span> dvmdostem-dev runmask-util.py --yx <span class="m">0</span> <span class="m">0</span> /data/workflows/ws2022_lab1/run-mask.nc
+$ docker compose <span class="nb">exec</span> dvmdostem-dev runmask-util.py --yx <span class="m">0</span> <span class="m">0</span> /data/workflows/basic_model_run/run-mask.nc
 Turning pixel<span class="o">(</span>y,x<span class="o">)</span> <span class="o">(</span><span class="m">0</span>,0<span class="o">)</span> to <span class="s1">&#39;1&#39;</span>, <span class="o">(</span>ON<span class="o">)</span>.
 
 <span class="c1"># And another pixel</span>
-$ docker compose <span class="nb">exec</span> dvmdostem-dev runmask-util.py --yx <span class="m">1</span> <span class="m">1</span> /data/workflows/ws2022_lab1/run-mask.nc
+$ docker compose <span class="nb">exec</span> dvmdostem-dev runmask-util.py --yx <span class="m">1</span> <span class="m">1</span> /data/workflows/basic_model_run/run-mask.nc
 Turning pixel<span class="o">(</span>y,x<span class="o">)</span> <span class="o">(</span><span class="m">1</span>,1<span class="o">)</span> to <span class="s1">&#39;1&#39;</span>, <span class="o">(</span>ON<span class="o">)</span>.
 </pre></div>
 </div>
@@ -703,12 +704,12 @@ disable the first pixel you enabled!</p>
 <h3><span class="section-number">2.5.4. </span>Choosing the outputs<a class="headerlink" href="#choosing-the-outputs" title="Permalink to this heading"></a></h3>
 <p>Next we need to enable some output variables. The control for which outputs
 <code class="docutils literal notranslate"><span class="pre">dvmdostem</span></code> will generate and at what resolution happens using a special
-<code class="docutils literal notranslate"><span class="pre">.csv</span></code> file. The file has one row for every possible variable and columns for
+<code class="docutils literal notranslate"><span class="pre">.csv</span></code> file. The file has one row for every available variable and columns for
 the different resolutions. The file can be edited by hand, but we have also
 written a utility script for working with the file. We’ll use the utility script
 here. For this example we will do our command using the interactive form instead
 of the one-off form. Also notice that this script outputs a summary of the
-variable enabled in a tabular format. This means that it is hard to read on a
+variables enabled in a tabular format. This means that it is hard to read on a
 narrow screen because the lines wrap, which is why the following looks so bad.
 On your computer you can make the font smaller or your terminal wider to have
 the output be readable.</p>
@@ -716,40 +717,72 @@ the output be readable.</p>
 $ docker compose <span class="nb">exec</span> dvmdostem-dev bash
 
 <span class="c1"># Change into our working directory for this experiment</span>
-develop@ef7aad33441c:/work$ <span class="nb">cd</span> /data/workflows/ws2022_lab1/
+develop@ef7aad33441c:/work$ <span class="nb">cd</span> /data/workflows/basic_model_run/
 
 <span class="c1"># Turn on RH</span>
-develop@ef7aad33441c:/data/workflows/ws2022_lab1$ outspec_utils.py config/output_spec.csv --on RH y layer
+develop@ef7aad33441c:/data/workflows/basic_model_run$ outspec_utils.py config/output_spec.csv --on RH y layer
                 Name                Units       Yearly      Monthly        Daily          PFT Compartments       Layers    Data Type     Description
                   RH            g/m2/time            y                   invalid      invalid      invalid            l       double     Heterotrophic respiration
 
 <span class="c1"># Turn on VEGC</span>
-develop@ef7aad33441c:/data/workflows/ws2022_lab1$ outspec_utils.py config/output_spec.csv --on VEGC m pft
+develop@ef7aad33441c:/data/workflows/basic_model_run$ outspec_utils.py config/output_spec.csv --on VEGC m pft
                 Name                Units       Yearly      Monthly        Daily          PFT Compartments       Layers    Data Type     Description
                 VEGC                 g/m2            y            m      invalid            p                   invalid       double     Total veg. biomass C
 </pre></div>
 </div>
-<div class="admonition note" id="outspec-utils">
-<p class="admonition-title">Note</p>
+<div class="admonition warning" id="outspec-utils">
+<p class="admonition-title">Warning</p>
 <p>The order of arguments to <code class="docutils literal notranslate"><span class="pre">outspec_utils.py</span></code> is very counterintuitive!  The
 file you want to modify needs to be the first argument so that it doesn’t get
 confused with the resolution specification.</p>
 </div>
+<div class="admonition note" id="outspec-utils-flags">
+<p class="admonition-title">Note</p>
+<p>Try the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag for more options, inparticular, the <code class="docutils literal notranslate"><span class="pre">-s</span></code> flag for
+summarizing the current file.</p>
+</div>
+<p>Every output variable can be produced for a set of dimensions. These dimensions
+are a reflection of the <a class="reference internal" href="../model_overview.html#structure"><span class="std std-ref">structure of the model</span></a>
+and vary between output variables. The more dimensions are selected, the more
+information you will get, and the larger the output files will be. For regional
+runs, a trade-off between the granularity of the outputs needed and the size of
+the output files needs to be considered.</p>
+<p>Three time dimensions are available: yearly, monthly and daily. Daily outputs
+are only available for a few physical variables, and aren’t generally produced
+as (1) the model is primarily designed to represent ecological dynamics on a
+monthly basis, and (2) the amount of data created rapidly becomes unmanageable
+for multi-pixel runs.</p>
+<p>Two dimensions are specific to the vegetation: PFT, i.e. plant functional type,
+and Compartment. By default, all output variables associated with the
+vegetation are produced for the entire ecosystem (community type). But every
+community type is defined by an ensemble of plant function types, which are
+composed of single or multiple species sharing similar functional traits (e.g.
+“deciduous shrubs”, “evergreen trees”, “sphagnum moss” …). Finally, every PFT is
+partitioned into multiple compartments: “leaves”, “wood” (stem and
+branches), and “roots” (coarse and fine). By selecting PFT and/or compartment,
+the outputs for a vegetation-related variable will be partitioned by these
+dimensions.</p>
+<p>One dimension is specific to the soil column: layer. The soil column is divided
+into multiple layers, that can belong to five types of horizons – brown moss,
+fibric organic, humic organic, mineral and rock. By default, soil-related
+variables will be summed-up across the entire soil column. But if the layer
+dimension is selected in the <code class="docutils literal notranslate"><span class="pre">output_spec.csv</span></code> file, the selected variable
+will produce ouputs by layer.</p>
 </section>
 </section>
 <section id="launch-the-dvmdostem-run">
 <h2><span class="section-number">2.6. </span>Launch the dvmdostem run<a class="headerlink" href="#launch-the-dvmdostem-run" title="Permalink to this heading"></a></h2>
 <p>Finally we are set to run the model! There are a number of command line options
-available for <code class="docutils literal notranslate"><span class="pre">dvmdostem</span></code> which you can investigate with the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag. The
-options used here are for setting the length of the <a class="reference internal" href="../model_overview.html#temporal"><span class="std std-ref">run-stages</span></a>, for controlling the log level output, and
-for forcing the model to run as a particular community type.</p>
-<p>In a real run <code class="docutils literal notranslate"><span class="pre">--eq-yrs</span></code> might be something like 1500 and <code class="docutils literal notranslate"><span class="pre">--sp-yrs</span></code> something like
-250. But for testing we might be too impatient to wait for that. Plus for this
-toy example, we enabled fairly hi-resolution outputs so running the model for
-long time spans could result in huge volumes of output. The <code class="docutils literal notranslate"><span class="pre">dvmdostem</span></code> model is
-fairly flexible with respect to outputs and output resolution so the user must
-put some thought into choosing configurations that make sense and are reasonable
-for the available computing power.</p>
+available for <code class="docutils literal notranslate"><span class="pre">dvmdostem</span></code> which you can investigate with the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag.
+The options used here are for setting the length of the <a class="reference internal" href="../model_overview.html#temporal"><span class="std std-ref">run-stages</span></a>, for controlling the log level output, and for
+forcing the model to run as a particular community type.</p>
+<p>In a real run <code class="docutils literal notranslate"><span class="pre">--eq-yrs</span></code> might be something like 1500 and <code class="docutils literal notranslate"><span class="pre">--sp-yrs</span></code>
+something like 250. But for testing we might be too impatient to wait for that.
+Plus for this toy example, we enabled fairly hi-resolution outputs so running
+the model for long time spans could result in huge volumes of output. The
+<code class="docutils literal notranslate"><span class="pre">dvmdostem</span></code> model is fairly flexible with respect to outputs and output
+resolution so the user must put some thought into choosing configurations that
+make sense and are reasonable for the available computing power.</p>
 <p>In this case we are forcing the community type to be CMT 4. In a “normal”
 <code class="docutils literal notranslate"><span class="pre">dvmdostem</span></code> run, the community type is controlled by the input
 <code class="docutils literal notranslate"><span class="pre">vegetation.nc</span></code> file. This file has a CMT code for each pixel, which
@@ -757,8 +790,8 @@ corresponds to the CMT numbers in the parameter files. Frequently for single
 pixel runs the user wants to ignore the <code class="docutils literal notranslate"><span class="pre">vegetation.nc</span></code> map and force the
 pixel to run as a particular CMT. In this case we want to force our pixel to run
 as CMT 4 simply because we know that the parameters for CMT 4 have been
-calibrated. For more discussion about community types in dvmdostem see <a class="reference internal" href="../model_overview.html#community-types-cmts"><span class="std std-ref">the CMT
-section</span></a>.</p>
+calibrated. For more discussion about community types in dvmdostem see <a class="reference internal" href="../model_overview.html#community-types-cmts"><span class="std std-ref">the
+CMT section</span></a>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">--log-level</span></code> command line option controls the amount of information that is
 printed to the console during the model run. There are 5 levels to choose from:
 debug, info, note, warn, error, fatal. With debug level, all print statements in
@@ -771,7 +804,7 @@ if a run fails, it can be difficult to know why.</p>
 <p>Despite the fact that there is a command line option for pointing to an
 arbitrary control file (config.js), this option doesn’t work when used with
 relative paths in the control file as we have for this lab. For this reason we
-provide the <code class="docutils literal notranslate"><span class="pre">--workdir</span> <span class="pre">/data/workflows/ws2022_lab1/</span></code> command line option
+provide the <code class="docutils literal notranslate"><span class="pre">--workdir</span> <span class="pre">/data/workflows/basic_model_run/</span></code> command line option
 when launching the model. Notice that this command line option is associated
 with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">exec</span></code>, not <code class="docutils literal notranslate"><span class="pre">dvmdostem</span></code>.</p>
 </div>
@@ -798,7 +831,7 @@ appropriate for your particular use-case.</p>
 </div>
 <p>Launch the model with the following command, note that the majority of the
 console output has been omitted for clarity:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> --workdir /data/workflows/ws2022_lab1/ dvmdostem-dev dvmdostem -l err -f /data/workflows/ws2022_lab1/config/config.js -p <span class="m">50</span> -e <span class="m">100</span> -s <span class="m">25</span> -t <span class="m">115</span> -n <span class="m">85</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> --workdir /data/workflows/basic_model_run/ dvmdostem-dev dvmdostem -l err -f /data/workflows/basic_model_run/config/config.js -p <span class="m">50</span> -e <span class="m">100</span> -s <span class="m">25</span> -t <span class="m">115</span> -n <span class="m">85</span>
 Setting up logging...
 <span class="o">[</span>err<span class="o">]</span> <span class="o">[]</span> Looks like CMTNUM output is NOT enabled. Strongly recommended to <span class="nb">enable</span> this output! Use outspec_utils.py to turn on the CMTNUM output!
 <span class="o">[</span>err<span class="o">]</span> <span class="o">[</span>PRE-RUN-&gt;Y<span class="o">]</span> y: <span class="m">0</span> x: <span class="m">0</span> Year: <span class="m">0</span>
@@ -827,7 +860,7 @@ Total Seconds: <span class="m">70</span>
 <p>With a quick glance at the console output, it looks like the run completed
 without problems. We can further verify this by looking at the run-status.nc
 file in the output folder, for example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> dvmdostem-dev ncdump /data/workflows/ws2022_lab1/output/run_status.nc
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> dvmdostem-dev ncdump /data/workflows/basic_model_run/output/run_status.nc
 netcdf run_status <span class="o">{</span>
 dimensions:
   <span class="nv">Y</span> <span class="o">=</span> <span class="m">10</span> <span class="p">;</span>
@@ -863,7 +896,7 @@ line option, we need to investigate the vegetation.nc input file, and
 specifically for the two pixels we have enabled (0,0) and (1,1). The path to
 the file is in the <code class="docutils literal notranslate"><span class="pre">config/config.js</span></code> file. We can use grep to find this
 line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> dvmdostem-dev grep vegetation.nc /data/workflows/ws2022_lab1/config/config.js
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> dvmdostem-dev grep vegetation.nc /data/workflows/basic_model_run/config/config.js
   <span class="s2">&quot;veg_class_file&quot;</span>: <span class="s2">&quot;/data/input-catalog/cru-ts40_ar5_rcp85_ncar-ccsm4_CALM_Chevak_10x10/vegetation.nc&quot;</span>,
 </pre></div>
 </div>
